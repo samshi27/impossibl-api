@@ -15,9 +15,8 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  spring:
-    profiles:
-      active: dev
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
 
 jwt:
   secret: ${JWT_SECRET}
