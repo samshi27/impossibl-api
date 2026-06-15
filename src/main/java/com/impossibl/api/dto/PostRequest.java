@@ -25,6 +25,8 @@ public record PostRequest(
 		PostStatus status,
 
 		@Size(max = 10, message = "A post can have at most 10 tags")
-		Set<@Size(max = 30, message = "Each tag must be at most 30 characters") String> tags
+		Set<@Size(max = 30, message = "Each tag must be at most 30 characters") String> tags,
+
+		boolean isFeatured
 ) {
 }

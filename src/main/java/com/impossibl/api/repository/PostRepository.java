@@ -17,4 +17,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 	boolean existsBySlug(String slug);
 
 	List<Post> findByTags_NameAndStatus(String name, PostStatus status);
+
+	List<Post> findByIsFeaturedTrue();
 }

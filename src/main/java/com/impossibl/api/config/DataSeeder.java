@@ -58,7 +58,8 @@ public class DataSeeder implements CommandLineRunner {
 						""",
 				"Samshi",
 				PostStatus.PUBLISHED,
-				Set.of("meta", "angular", "webdev")
+				Set.of("meta", "angular", "webdev"),
+				true
 		));
 
 		postService.create(new PostRequest(
@@ -81,7 +82,8 @@ public class DataSeeder implements CommandLineRunner {
 						""",
 				"Samshi",
 				PostStatus.PUBLISHED,
-				Set.of("bookbinding", "experiments")
+				Set.of("bookbinding", "experiments"),
+				false
 		));
 
 		postService.create(new PostRequest(
@@ -102,7 +104,8 @@ public class DataSeeder implements CommandLineRunner {
 						""",
 				"Pooji",
 				PostStatus.PUBLISHED,
-				Set.of("crochet")
+				Set.of("crochet"),
+				false
 		));
 
 		postService.create(new PostRequest(
@@ -125,7 +128,8 @@ public class DataSeeder implements CommandLineRunner {
 						""",
 				"Phani",
 				PostStatus.PUBLISHED,
-				Set.of("fountain pens", "reviews")
+				Set.of("fountain pens", "reviews"),
+				false
 		));
 
 		postService.create(new PostRequest(
@@ -146,7 +150,8 @@ public class DataSeeder implements CommandLineRunner {
 						""",
 				"Pooji",
 				PostStatus.PUBLISHED,
-				Set.of("postcrossing", "collecting")
+				Set.of("postcrossing", "collecting"),
+				false
 		));
 
 		postService.create(new PostRequest(
@@ -169,7 +174,8 @@ public class DataSeeder implements CommandLineRunner {
 						""",
 				"Samshi",
 				PostStatus.PUBLISHED,
-				Set.of("origami", "bookbinding", "experiments")
+				Set.of("origami", "bookbinding", "experiments"),
+				false
 		));
 
 		postService.create(new PostRequest(
@@ -192,7 +198,8 @@ public class DataSeeder implements CommandLineRunner {
 						""",
 				"Phani",
 				PostStatus.PUBLISHED,
-				Set.of("fitness")
+				Set.of("fitness"),
+				false
 		));
 
 		log.info("Seeding complete: {} posts created.", postRepository.count());

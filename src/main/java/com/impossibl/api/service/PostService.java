@@ -74,6 +74,9 @@ public class PostService {
 		post.setFeatured(false);
 		post.setViewCount(0);
 		post.setPublishedAt(request.status() == PostStatus.PUBLISHED ? Instant.now() : null);
+		boolean featured = resolveFeatured(request.isFeatured(), request.status(), null);
+		post.setFeatured(featured);
+
 		Post saved = postRepository.save(post);
 		return PostResponse.from(saved);
 	}
@@ -82,7 +85,6 @@ public class PostService {
 	public PostResponse update(Long id, PostRequest request) {
 		Post post = postRepository.findById(id).orElseThrow(() -> new PostNotFoundException(id));
 
-		// content - overwritten
 		post.setTitle(request.title());
 		post.setExcerpt(request.excerpt());
 		post.setBody(request.body());
@@ -90,12 +92,12 @@ public class PostService {
 		post.setStatus(request.status());
 		post.setTags(resolveTags(request.tags()));
 
-		// publishedAt - set once, never rewrite
 		if (post.getPublishedAt() == null && request.status() == PostStatus.PUBLISHED) {
 			post.setPublishedAt(Instant.now());
 		}
 
-		// slug, id, createdAt, createdBy, viewCount, featured - untouched
+		post.setFeatured(resolveFeatured(request.isFeatured(), request.status(), post.getId()));
+
 		Post saved = postRepository.save(post);
 		return PostResponse.from(saved);
 	}
@@ -146,5 +148,25 @@ public class PostService {
 				.stream()
 				.map(PostResponse::from)
 				.toList();
+	}
+
+	private boolean resolveFeatured(boolean requestedFeatured, PostStatus status, Long currentPostId) {
+		// only published posts can be featured
+		if (requestedFeatured && status != PostStatus.PUBLISHED) {
+			return false; // silently un-feature if not published
+		}
+
+		// if featuring this one, clear the flag on all others
+		if (requestedFeatured) {
+			List<Post> currentlyFeatured = postRepository.findByIsFeaturedTrue();
+			for (Post p : currentlyFeatured) {
+				if (!p.getId().equals(currentPostId)) {
+					p.setFeatured(false);
+					postRepository.save(p);
+				}
+			}
+		}
+
+		return requestedFeatured;
 	}
 }
