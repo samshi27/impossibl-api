@@ -5,6 +5,7 @@ import com.impossibl.api.util.JwtUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -27,6 +28,10 @@ public class AuthController {
 	private static final String COOKIE_NAME = "jwt";
 	private static final long COOKIE_MAX_AGE = 24 * 60 * 60; // 24h in seconds
 
+	@Value("${app.cookie.secure:false}") private boolean cookieSecure;
+	@Value("${app.cookie.same-site:Lax}") private String cookieSameSite;
+
+
 	@PostMapping("/login")
 	public ResponseEntity<?> login(
 			@Valid @RequestBody LoginRequest request,
@@ -43,10 +48,10 @@ public class AuthController {
 		// httpOnly cookie
 		ResponseCookie cookie = ResponseCookie.from(COOKIE_NAME, token)
 				.httpOnly(true)
-				.secure(false)       // false for localhost (http); true in production (https)
 				.path("/")
 				.maxAge(COOKIE_MAX_AGE)
-				.sameSite("Lax")
+				.secure(cookieSecure)
+				.sameSite(cookieSameSite)
 				.build();
 
 		response.addHeader("Set-Cookie", cookie.toString());
@@ -71,10 +76,10 @@ public class AuthController {
 	public ResponseEntity<?> logout(HttpServletResponse response) {
 		ResponseCookie cookie = ResponseCookie.from(COOKIE_NAME, "")
 				.httpOnly(true)
-				.secure(false)      // true in production
 				.path("/")
-				.maxAge(0)          // expire immediately
-				.sameSite("Lax")
+				.maxAge(0)
+				.secure(cookieSecure)
+				.sameSite(cookieSameSite)
 				.build();
 
 		response.addHeader("Set-Cookie", cookie.toString());
